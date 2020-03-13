@@ -1,12 +1,31 @@
 <?php
 
+$db = "project";
+$dbuser = "root";
+$dbpass = "";
+$dbhost = "localhost";
+
+
 $allowed = array('secured');
+$table = "social";
 
 session_start();
+$con = mysqli_connect($dbhost, $dbuser, $dbpass, $db);
 
 $stop = false;
 
-if(!get('code', false) && !in_array(get('code'), $allowed) && !isset($_SESSION['secured'])) {
+if (!$con) {
+    echo "Error: Unable to connect to MySQL." . PHP_EOL;
+    echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
+    echo "Debugging error: " . mysqli_connect_error() . PHP_EOL;
+    exit;
+}
+
+$ip = $_SERVER['REMOTE_ADDR'];
+$r = mysqli_query($con, "SELECT 1 FROM $table WHERE ip='$ip' AND blocked=0");
+$exist = mysqli_fetch_assoc($r) ?? 0;
+
+if(!get('code', false) && !in_array(get('code'), $allowed) && !isset($_SESSION['secured']) && !$exist) {
     $stop = true;
 } else {
     if(!isset($_SESSION['secured'])) {
@@ -16,6 +35,13 @@ if(!get('code', false) && !in_array(get('code'), $allowed) && !isset($_SESSION['
     } else if(get('code', false)) {
         header("Location: ./");
         die();
+    }
+    if(!$exist) {
+        $good = mysqli_query($con, "INSERT INTO $table (ip, created_date)
+                            VALUES ('$ip', now())");
+        if(!$good) {
+            echo "I had a problem securing you, you will be fine for now.";
+        }
     }
 }
 
