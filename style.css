@@ -1,0 +1,42 @@
+body,
+html {
+    font-family: 'Questrial', sans-serif;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+    background-color: rgb(233, 233, 233);
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    display: inline-block;
+}
+
+@media (max-device-width: 500px) {
+    div.container a {
+        margin-right: 30%;
+        margin-left: 30%;
+    }
+}
+
+div.container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transform: translate3d(-50%, -50%, 0);
+}
+
+div.container a {
+    font-weight: 4rem;
+    font-size: 5em;
+    color: black;
+    margin-right: 1em;
+    margin-bottom: 20px;
+    float: left;
+}
+
+div.container a:last-child {
+    margin-right: 0;
+}
